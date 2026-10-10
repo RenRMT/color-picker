@@ -1,0 +1,109 @@
+{
+  "title": "ROOS Kleurenkiezer",
+  "lang": "nl",
+  "intro": "Alle kleurtokens van het RVO Open Ontwerp Systeem, inclusief de volledige tintenreeks per kleur — ook de tinten die dit dashboardsysteem zelf niet gebruikt. Elke tint is een gedefinieerd token, geen gemengd percentage. Klik een vlak om de hexwaarde te kopiëren.",
+  "source": {
+    "label": "NL Design System — RVO",
+    "url": "https://nl-design-system.github.io/rvo/docs"
+  },
+  "theme": {
+    "font": "Verdana, Geneva, sans-serif",
+    "background": "#F1F5F9",
+    "text": "#1E293B",
+    "muted": "#475569",
+    "heading": "#154273",
+    "accent": "#007BC7",
+    "rule": "#007BC7",
+    "radius": "3px"
+  },
+  "colours": {
+    "Grijs-050": "#F8FAFC",
+    "Grijs-100": "#F1F5F9",
+    "Grijs-200": "#E2E8F0",
+    "Grijs-300": "#CBD5E1",
+    "Grijs-400": "#94A3B8",
+    "Grijs-500": "#64748B",
+    "Grijs-600": "#475569",
+    "Grijs-700": "#334155",
+    "Grijs-800": "#1E293B",
+    "Grijs-900": "#0F172A",
+    "Zwart": "#000000",
+    "Wit": "#FFFFFF"
+  },
+  "ramps": {
+    "steps": ["150", "300", "450", "600", "750", "base"],
+    "separator": "-",
+    "baseStep": "base",
+    "pick": "even",
+    "colours": {
+      "Lintblauw": ["#DCE3EA", "#B9C7D5", "#95AAC0", "#738EAB", "#507196", "#154273"],
+      "Violet": ["#F2D9E7", "#E5B2CF", "#D88CB7", "#CB66A0", "#BE4088", "#A90061"],
+      "Lichtblauw": ["#EEF7FC", "#DEF0F8", "#CCE7F4", "#BCDFF1", "#ABD7ED", "#8FCAE7"],
+      "Hemelblauw": ["#D9EBF7", "#B3D7EE", "#8CC4E6", "#66B0DD", "#409CD5", "#007BC7"],
+      "Donkerblauw": ["#D9E9F0", "#B3D2E1", "#8CBBD2", "#67A4C3", "#418EB4", "#01689B"],
+      "Oranje": ["#FBEAD9", "#F6D4B3", "#F1BF8C", "#EDA966", "#E89440", "#E17000"],
+      "Groen": ["#E2EDDB", "#C4DBB7", "#A6C991", "#88B76D", "#6BA549", "#39870C"],
+      "Donkergeel": ["#FFF4DB", "#FFE9B8", "#FFDE94", "#FFD371", "#FFC84D", "#FFB612"],
+      "Rood": ["#F9DFDD", "#F3C0BC", "#EC9F99", "#E68078", "#E06056", "#D51B1E"]
+    }
+  },
+  "sections": [
+    {
+      "title": "Wat dit dashboardsysteem gebruikt",
+      "groups": [
+        {
+          "title": "Reekspalet — de acht datakleuren, in deze volgorde",
+          "note": "Reeks 1 is Hemelblauw, de primaire kleur van ROOS. Reeks 8 is Grijs-400 en betekent altijd \"overig\" of \"vorige periode\", nooit een gewone categorie.",
+          "colours": ["Hemelblauw", "Oranje-750", "Violet-600", "Groen-750", "Donkergeel-450", "Rood-750", "Lichtblauw", "Grijs-400"]
+        },
+        {
+          "title": "Status",
+          "note": "Groen, Donkergeel en Rood op volle sterkte zijn status en geen reekskleur. Donkergeel haalt AA niet met witte tekst — daar hoort Grijs-800 of Zwart op.",
+          "colours": ["Groen", "Donkergeel", "Rood", "Grijs-400"]
+        },
+        {
+          "title": "Structuur en tekst",
+          "note": "Lintblauw alleen voor kopbalk en tabelkop. Hemelblauw voor alles wat interactief is. Grijs-600 voor ondergeschikte tekst, Grijs-800 voor lopende tekst.",
+          "colours": ["Lintblauw", "Hemelblauw", "Donkerblauw", "Grijs-100", "Grijs-300", "Grijs-600", "Grijs-800", "Wit"]
+        }
+      ]
+    },
+    {
+      "title": "Alle tintenreeksen",
+      "type": "ramps",
+      "intro": "Negen kleuren × zes tinten. Dit zijn gedefinieerde tokens, niet gemengde percentages: neem een tint over zoals hij hier staat en meng zelf niets bij. De reeksen lopen links licht naar rechts vol."
+    },
+    {
+      "title": "Grijstrap",
+      "intro": "Twaalf tokens. De ROOS-grijzen zijn blauw getint (slate) en niet neutraal — meng ze niet met een neutraal grijs in hetzelfde rapport.",
+      "groups": [
+        {
+          "title": "Grijs-050 tot Grijs-900, plus Zwart en Wit",
+          "colours": ["Grijs-050", "Grijs-100", "Grijs-200", "Grijs-300", "Grijs-400", "Grijs-500", "Grijs-600", "Grijs-700", "Grijs-800", "Grijs-900", "Zwart", "Wit"]
+        }
+      ]
+    },
+    {
+      "title": "Sequentiële schaal",
+      "type": "sequential",
+      "intro": "Eén kleur, licht naar donker, voor een geordende grootheid: een heatmap, gegevensbalken, een gevulde kaart.",
+      "default": {
+        "colour": "Hemelblauw",
+        "steps": 6
+      }
+    },
+    {
+      "title": "Divergerende schaal",
+      "type": "diverging",
+      "intro": "Twee kleuren om een neutraal midden, voor een grootheid met een nulpunt: afwijking van streefwaarde, verandering ten opzichte van vorige periode.",
+      "from": ["300", "450", "600", "750", "base"],
+      "centre": ["Grijs-100", "Grijs-050", "Wit"],
+      "default": {
+        "left": "Rood",
+        "right": "Groen",
+        "steps": 7,
+        "centre": "Grijs-100"
+      }
+    }
+  ]
+}

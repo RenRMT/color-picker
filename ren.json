@@ -1,0 +1,95 @@
+{
+  "title": "Colour Palettes",
+  "lang": "en",
+  "theme": {
+    "font": "\"Segoe UI\", system-ui, -apple-system, Roboto, sans-serif",
+    "background": "#F3F3F3",
+    "text": "#191919",
+    "muted": "#4D5656",
+    "heading": "#335252",
+    "accent": "#1C6758",
+    "rule": "#B8B8B8",
+    "radius": "12px"
+  },
+  "colours": {
+    "Primary Teal": "#1C6758",
+    "Dark Teal": "#335252",
+    "Black": "#191919",
+    "Light Grey": "#F3F3F3",
+    "Platinum": "#ECECEC",
+    "Steel": "#B8B8B8",
+    "Teal": "#338877",
+    "Jasmine": "#FFDD77",
+    "Baltic": "#2B5B9B",
+    "Coral": "#FF9779",
+    "Sky": "#88CCFF",
+    "Cherry": "#BC3C4C",
+    "Blush": "#FFBBDD",
+    "Violet": "#8833AA"
+  },
+  "ramps": {
+    "steps": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+    "pick": ["6", "2", "4", "3", "5", "7", "8", "1", "9", "10"],
+    "colours": {
+      "Teal": ["#EBF3F1", "#D6E7E4", "#ADCFC9", "#85B8AD", "#5CA092", "#338877", "#296D5F", "#1F5247", "#143630", "#0A1B18"],
+      "Jasmine": ["#FFFCF1", "#FFF8E4", "#FFF1C9", "#FFEBAD", "#FFE492", "#FFDD77", "#CCB15F", "#998547", "#665830", "#332C18"],
+      "Baltic": ["#EAEFF5", "#D5DEEB", "#AABDD7", "#809DC3", "#557CAF", "#2B5B9B", "#22497C", "#1A375D", "#11243E", "#09121F"],
+      "Coral": ["#FFF5F2", "#FFEAE4", "#FFD5C9", "#FFC1AF", "#FFAC94", "#FF9779", "#CC7961", "#995B49", "#663C30", "#331E18"],
+      "Sky": ["#F3FAFF", "#E7F5FF", "#CFEBFF", "#B8E0FF", "#A0D6FF", "#88CCFF", "#6DA3CC", "#527A99", "#365266", "#1B2933"],
+      "Cherry": ["#F8ECED", "#F2D8DB", "#E4B1B7", "#D78A94", "#C96370", "#BC3C4C", "#96303D", "#71242E", "#4B181E", "#260C0F"],
+      "Blush": ["#FFF8FC", "#FFF1F8", "#FFE4F1", "#FFD6EB", "#FFC9E4", "#FFBBDD", "#CC96B1", "#997085", "#664B58", "#33252C"],
+      "Violet": ["#F3EBF7", "#E7D6EE", "#CFADDD", "#B885CC", "#A05CBB", "#8833AA", "#6D2988", "#521F66", "#361444", "#1B0A22"]
+    }
+  },
+  "sections": [
+    {
+      "title": "Brand Colours",
+      "groups": [
+        {
+          "title": "Corporate brand",
+          "colours": ["Primary Teal", "Dark Teal", "Black", "Light Grey"]
+        },
+        {
+          "title": "Neutral shades",
+          "colours": ["Platinum", "Steel"]
+        }
+      ]
+    },
+    {
+      "title": "Data Colours",
+      "groups": [
+        {
+          "title": "Contrasting order",
+          "colours": ["Teal", "Jasmine", "Baltic", "Coral", "Sky", "Cherry", "Blush", "Violet"]
+        },
+        {
+          "title": "Rainbow order",
+          "colours": ["Violet", "Baltic", "Sky", "Teal", "Jasmine", "Blush", "Coral", "Cherry"]
+        }
+      ]
+    },
+    {
+      "title": "Single Colour Ramps",
+      "type": "sequential",
+      "default": {
+        "colour": "Teal",
+        "steps": 7
+      }
+    },
+    {
+      "title": "Diverging Ramps",
+      "type": "diverging",
+      "centre": [
+        {
+          "name": "Neutral",
+          "value": "#F9F9F9"
+        }
+      ],
+      "default": {
+        "left": "Teal",
+        "right": "Jasmine",
+        "steps": 7
+      }
+    }
+  ]
+}

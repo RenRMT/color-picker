@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Colour Palettes</title>
+
+<style>
+    /* Page defaults. A palette's "theme" block in its JSON file overrides these. */
+    :root {
+        --font: Arial, Helvetica, sans-serif;
+        --bg: #F9F9F9;
+        --text: #1A1A1A;
+        --muted: #555555;
+        --heading: var(--text);
+        --accent: #2B5B9B;
+        --rule: rgba(0, 0, 0, .08);
+        --radius: 8px;
+        --line: rgba(0, 0, 0, .2);
+    }
+
+    body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+        margin: 24px;
+        line-height: 1.4;
+    }
+
+    a { color: var(--accent); }
+
+    /* Header */
+    .masthead {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px 24px;
+    }
+
+    h1 {
+        font-size: 28px;
+        margin: 0;
+        color: var(--heading);
+    }
+
+    .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
+
+    .toolbar label { font-weight: 700; }
+
+    .subtitle, .source {
+        color: var(--muted);
+        font-size: 14px;
+        max-width: 84ch;
+        margin: 8px 0 0 0;
+    }
+
+    .source { font-size: 13px; }
+
+    /* Sections */
+    h2 {
+        font-size: 20px;
+        margin: 40px 0 0 0;
+        padding-top: 16px;
+        border-top: 2px solid var(--rule);
+    }
+
+    h3 {
+        font-size: 15px;
+        margin: 24px 0 8px 0;
+    }
+
+    .note, .role {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+        max-width: 84ch;
+        margin: 8px 0;
+    }
+
+    .palette-group { margin-bottom: 20px; }
+
+    /* Swatch grids */
+    .palette {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+        gap: 12px;
+        width: 100%;
+    }
+
+    /* A ramp reads as one row: light on the left, full strength on the right */
+    .palette.row {
+        grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+        max-width: calc(var(--cols) * 128px);
+        gap: 8px;
+    }
+
+    .color-box {
+        --box-color: #000;
+        background: var(--box-color);
+        height: 104px;
+        border: none;
+        border-radius: var(--radius);
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06), 0 1px 4px rgba(0, 0, 0, .14);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        position: relative;
+        padding: 0;
+        cursor: pointer;
+        font: inherit;
+        transition: transform .15s;
+    }
+
+    .color-box:hover { transform: scale(1.04); }
+
+    .color-box:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+    }
+
+    .caption {
+        display: block;
+        background: rgba(200, 200, 200, .3);
+        border-radius: 0 0 var(--radius) var(--radius);
+        font-size: 12px;
+        line-height: 1.35;
+        padding: 4px;
+        text-align: center;
+        overflow-wrap: anywhere;
+    }
+
+    .caption strong { display: block; }
+
+    .copied {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        background: rgba(0, 0, 0, .75);
+        color: #FFFFFF;
+        padding: 3px 6px;
+        border-radius: 4px;
+        font-size: 12px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .2s;
+    }
+
+    .copied.visible { opacity: 1; }
+
+    /* A name in the config that doesn't resolve to a colour */
+    .color-box.missing {
+        background: repeating-linear-gradient(135deg, #FFFFFF 0 8px, #F2D6D3 8px 16px);
+        cursor: default;
+    }
+
+    .color-box.missing:hover { transform: none; }
+    .color-box.missing .caption { color: #7A271A; background: rgba(255, 255, 255, .8); }
+
+    /* Controls */
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin: 12px 0 16px 0;
+        font-size: 14px;
+    }
+
+    .controls label {
+        font-weight: 700;
+        margin-left: 8px;
+    }
+
+    .controls label:first-child { margin-left: 0; }
+
+    .select, .btn {
+        font: inherit;
+        font-size: 14px;
+        padding: 6px 10px;
+        border: 1px solid var(--line);
+        border-radius: min(var(--radius), 6px);
+        background: #FFFFFF;
+        color: #1A1A1A;
+        min-width: 100px;
+    }
+
+    .btn { cursor: pointer; min-width: 0; }
+    .select:hover, .btn:hover { border-color: var(--accent); }
+    .select:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+    .alert {
+        border-left: 4px solid #B42318;
+        background: #FEF3F2;
+        color: #7A271A;
+        padding: 12px 16px;
+        margin: 24px 0;
+        font-size: 14px;
+        max-width: 84ch;
+    }
+
+    .alert p { margin: 0 0 6px 0; }
+    .alert ul { margin: 0; padding-left: 20px; }
+    .alert code { background: rgba(0, 0, 0, .06); padding: 1px 4px; border-radius: 3px; }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    @media (max-width: 600px) {
+        body { margin: 12px; }
+        .palette { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; }
+        .palette.row { grid-template-columns: repeat(var(--cols-sm), minmax(0, 1fr)); max-width: none; }
+        .color-box { height: 88px; }
+        .controls { flex-direction: column; align-items: flex-start; }
+        .controls label { margin-left: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .color-box, .copied { transition: none; }
+        .color-box:hover { transform: none; }
+    }
+</style>
+</head>
+
+<body>
+<header>
+    <div class="masthead">
+        <h1 id="title">Colour Palettes</h1>
+        <div class="toolbar">
+            <label for="palette-select" id="palette-label">Palette</label>
+            <select id="palette-select" class="select"></select>
+            <button type="button" id="copy-css" class="btn">Copy as CSS variables</button>
+        </div>
+    </div>
+    <p id="intro" class="subtitle" hidden></p>
+    <p id="source" class="source" hidden></p>
+</header>
+
+<main id="palette-root"></main>
+<div id="announcer" class="sr-only" aria-live="polite"></div>
+
+<script>
+// ============================================================
+// All colours live in the palette files next to this page:
+//   palettes.json  – which palettes the switcher offers
+//   <id>.json      – one palette (see README.md for the format)
+// Nothing below needs editing to add or change a palette.
+// ============================================================
+
+const STRINGS = {
+  en: { palette:'Palette', colour:'Colour', steps:'Steps', left:'Colour 1', right:'Colour 2', centre:'Middle',
+        stepsUnit:'steps', neutral:'Neutral', copied:'Copied!', copyCss:'Copy as CSS variables',
+        cssCopied:'CSS variables copied', source:'Source', missing:'not defined' },
+  nl: { palette:'Palet', colour:'Kleur', steps:'Stappen', left:'Kleur 1', right:'Kleur 2', centre:'Midden',
+        stepsUnit:'stappen', neutral:'Neutraal', copied:'Gekopieerd', copyCss:'Kopieer als CSS-variabelen',
+        cssCopied:'CSS-variabelen gekopieerd', source:'Bron', missing:'niet gedefinieerd' }
+};
+
+// theme key in the JSON  →  CSS custom property on this page
+const THEME_KEYS = {
+  font:'--font', background:'--bg', text:'--text', muted:'--muted',
+  heading:'--heading', accent:'--accent', rule:'--rule', radius:'--radius'
+};
+
+let manifest = [];
+let P = null;        // the loaded palette, prepared for rendering
+let state = {};      // current control values, per section index
+
+// ------------------------------------------------------------
+// Colour helpers
+// ------------------------------------------------------------
+
+const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+function normHex(v){
+  if(typeof v !== 'string') return null;
+  let h = v.trim();
+  if(/^#[0-9a-f]{3}$/i.test(h)) h = '#' + [...h.slice(1)].map(c => c + c).join('');
+  return /^#[0-9a-f]{6}$/i.test(h) ? h.toUpperCase() : null;
+}
+
+const channels = hex => [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16));
+
+function toHex(rgb){
+  return '#' + rgb.map(n => clamp(Math.round(n), 0, 255).toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+
+// t = share of `to`: mix('#FFFFFF', base, .3) is a 30% tint of base
+function mix(from, to, t){
+  const a = channels(from), b = channels(to);
+  return toHex(a.map((c, i) => c + (b[i] - c) * t));
+}
+
+function luminance(hex){
+  const lin = c => { const s = c / 255; return s <= .03928 ? s / 12.92 : Math.pow((s + .055) / 1.055, 2.4); };
+  const [r, g, b] = channels(hex);
+  return .2126 * lin(r) + .7152 * lin(g) + .0722 * lin(b);
+}
+
+function contrast(a, b){
+  const la = luminance(a), lb = luminance(b);
+  return (Math.max(la, lb) + .05) / (Math.min(la, lb) + .05);
+}
+
+// Caption text: whichever of the theme's text colour or white contrasts more
+function inkFor(hex){
+  return contrast(P.ink, hex) >= contrast('#FFFFFF', hex) ? P.ink : '#FFFFFF';
+}
+
+// ------------------------------------------------------------
+// Reading a palette file
+// ------------------------------------------------------------
+
+function prepare(cfg, id){
+  const errors = [];
+  const r = cfg.ramps || {};
+  const tints = r.tints;
+  const sep = r.separator ?? ' ';
+  const base = r.baseStep == null ? null : String(r.baseStep);
+  const labels = r.steps ? r.steps.map(String)
+               : tints ? tints.percent.map(p => `${p}%`)
+               : null;
+  const nameOf = (colour, step) => step === base ? colour : `${colour}${sep}${step}`;
+
+  // Ramps: either a list of colours (light → dark), or one base colour that
+  // gets tinted with ramps.tints.mixWith at each of ramps.tints.percent.
+  const ramps = {};
+  for(const [colour, def] of Object.entries(r.colours || {})){
+    let values;
+    if(Array.isArray(def)){
+      values = def;
+    } else if(tints && normHex(def)){
+      values = tints.percent.map(p => mix(normHex(tints.mixWith) || '#FFFFFF', normHex(def), p / 100));
+    } else {
+      errors.push(tints ? `Ramp "${colour}": "${def}" is not a hex colour.`
+                        : `Ramp "${colour}" needs a list of colours, or add "tints" to "ramps" to generate them.`);
+      continue;
+    }
+    const steps = labels || values.map((_, i) => String(i + 1));
+    if(steps.length !== values.length)
+      errors.push(`Ramp "${colour}" has ${values.length} colours but ${steps.length} step names.`);
+    ramps[colour] = values.map((v, i) => {
+      const value = normHex(v);
+      if(!value) errors.push(`Ramp "${colour}": "${v}" is not a hex colour.`);
+      const step = steps[i] ?? String(i + 1);
+      return { step, name: nameOf(colour, step), value };
+    });
+  }
+
+  // Every named colour: the "colours" block first, then every ramp step by name
+  const lookup = new Map();
+  for(const [name, v] of Object.entries(cfg.colours || {})){
+    const value = normHex(v);
+    if(!value) errors.push(`Colour "${name}": "${v}" is not a hex colour.`);
+    lookup.set(name, value);
+  }
+  for(const ramp of Object.values(ramps))
+    for(const s of ramp) if(!lookup.has(s.name)) lookup.set(s.name, s.value);
+
+  const lang = cfg.lang || 'en';
+  const prepared = {
+    id, cfg, ramps, lookup, errors,
+    rampNames: Object.keys(ramps),
+    pick: r.pick,
+    lang,
+    t: { ...(STRINGS[lang] || STRINGS.en), ...(cfg.labels || {}) },
+    ink: normHex((cfg.theme || {}).text) || '#1A1A1A'
+  };
+
+  // Report names that don't resolve, so typos in the config are visible
+  const check = (where, entry) => {
+    if(typeof entry === 'string' && !lookup.has(entry)) errors.push(`${where}: no colour called "${entry}".`);
+  };
+  if(!Array.isArray(cfg.sections)) errors.push('The file has no "sections" list.');
+  (cfg.sections || []).forEach(sec => {
+    const where = `Section "${sec.title}"`;
+    (sec.groups || []).forEach(g => (g.colours || []).forEach(c => check(`${where} › "${g.title}"`, c)));
+    (sec.centre || []).forEach(c => check(`${where} › centre`, c));
+    if(sec.type === 'ramps') (sec.colours || []).forEach(c => { if(!ramps[c]) errors.push(`${where}: no ramp called "${c}".`); });
+    if((sec.type === 'sequential' || sec.type === 'diverging') && !prepared.rampNames.length)
+      errors.push(`${where} needs ramps, but the file defines none.`);
+  });
+
+  return prepared;
+}
+
+function resolve(entry){
+  if(typeof entry === 'string') return { name: entry, value: P.lookup.get(entry) ?? null };
+  return { name: entry.name, value: normHex(entry.value) };
+}
+
+// ------------------------------------------------------------
+// Ramp generators
+// ------------------------------------------------------------
+
+// Indices of the ramp steps a generator may use (section "from", default all)
+function poolFor(sec, colour){
+  const ramp = P.ramps[colour];
+  if(!sec.from) return ramp.map((_, i) => i);
+  const allowed = sec.from.map(String);
+  return ramp.map((s, i) => allowed.includes(s.step) ? i : -1).filter(i => i >= 0);
+}
+
+const poolSize = sec => Math.min(...P.rampNames.map(c => poolFor(sec, c).length));
+
+// Choose n steps from the pool, returned light → dark.
+//   pick: "even"         – spread evenly, both ends included
+//   pick: [step, …]      – priority order: the first n of this list
+function choose(pool, n, pick, ramp){
+  n = clamp(n, 1, pool.length);
+  if(Array.isArray(pick)){
+    const order = pick.map(String).map(s => ramp.findIndex(x => x.step === s)).filter(i => pool.includes(i));
+    pool.forEach(i => { if(!order.includes(i)) order.push(i); });
+    return order.slice(0, n).sort((a, b) => a - b);
+  }
+  if(n === 1) return [pool[pool.length - 1]];
+  return Array.from({ length: n }, (_, k) => pool[Math.round(k * (pool.length - 1) / (n - 1))]);
+}
+
+function stepsFor(sec, colour, n){
+  const ramp = P.ramps[colour];
+  return choose(poolFor(sec, colour), n, sec.pick ?? P.pick ?? 'even', ramp).map(i => ramp[i]);
+}
+
+function centres(sec){
+  return (sec.centre || [{ name: P.t.neutral, value: '#F9F9F9' }]).map(resolve);
+}
+
+function sequential(sec, s){
+  return stepsFor(sec, s.colour, s.steps);
+}
+
+// Dark → light → centre → light → dark
+function diverging(sec, s){
+  const perSide = ((s.steps % 2 ? s.steps : s.steps - 1) - 1) / 2;
+  const cs = centres(sec);
+  const centre = cs.find(c => c.name === s.centre) || cs[0];
+  return [...stepsFor(sec, s.left, perSide).reverse(), centre, ...stepsFor(sec, s.right, perSide)];
+}
+
+function initState(){
+  state = {};
+  const names = P.rampNames;
+  if(!names.length) return;
+  const known = (v, fallback) => names.includes(v) ? v : fallback;
+  (P.cfg.sections || []).forEach((sec, i) => {
+    const d = sec.default || {};
+    const size = poolSize(sec);
+    if(sec.type === 'sequential'){
+      state[i] = { colour: known(d.colour, names[0]), steps: clamp(+d.steps || size, Math.min(2, size), size) };
+    }
+    if(sec.type === 'diverging'){
+      let steps = clamp(+d.steps || 2 * size + 1, 3, 2 * size + 1);
+      if(steps % 2 === 0) steps -= 1;
+      const cs = centres(sec);
+      state[i] = {
+        left: known(d.left, names[0]),
+        right: known(d.right, names[1] ?? names[0]),
+        steps,
+        centre: cs.some(c => c.name === d.centre) ? d.centre : cs[0].name
+      };
+    }
+  });
+}
+
+// ------------------------------------------------------------
+// UI
+// ------------------------------------------------------------
+
+function el(tag, props = {}, children = []){
+  const node = document.createElement(tag);
+  Object.assign(node, props);
+  node.append(...children);
+  return node;
+}
+
+function announce(text){
+  const a = document.getElementById('announcer');
+  a.textContent = '';
+  requestAnimationFrame(() => { a.textContent = text; });
+}
+
+async function copyText(text){
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const ta = el('textarea', { value: text });
+    ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.append(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch {}
+    ta.remove();
+    return ok;
+  }
+}
+
+function swatch(c){
+  const box = el('button', { type:'button', className:'color-box' });
+
+  if(!c.value){
+    box.classList.add('missing');
+    box.disabled = true;
+    box.append(el('span', { className:'caption' }, [el('strong', { textContent: c.name }), P.t.missing]));
+    return box;
+  }
+
+  box.style.setProperty('--box-color', c.value);
+  box.title = `${c.name} ${c.value}`;
+
+  const caption = el('span', { className:'caption' }, [
+    el('strong', { textContent: c.name }),
+    el('span', { textContent: c.value })
+  ]);
+  caption.style.color = inkFor(c.value);
+
+  const toast = el('span', { className:'copied', textContent: P.t.copied });
+  toast.setAttribute('aria-hidden', 'true');
+
+  box.addEventListener('click', async () => {
+    if(!(await copyText(c.value))) return;
+    toast.classList.add('visible');
+    setTimeout(() => toast.classList.remove('visible'), 900);
+    announce(`${P.t.copied} ${c.value}`);
+  });
+
+  box.append(caption, toast);
+  return box;
+}
+
+function group(title, note, colours, layout){
+  const article = el('article', { className:'palette-group' });
+  if(title) article.append(el('h3', { textContent: title }));
+  if(note) article.append(el('p', { className:'role', textContent: note }));
+
+  const grid = el('div', { className: layout === 'row' ? 'palette row' : 'palette' });
+  if(layout === 'row'){
+    grid.style.setProperty('--cols', colours.length);
+    grid.style.setProperty('--cols-sm', colours.length > 5 ? Math.ceil(colours.length / 2) : colours.length);
+  }
+  colours.forEach(c => grid.append(swatch(c)));
+  article.append(grid);
+  return article;
+}
+
+function select(key, values, current, onChange){
+  const id = `ctl-${key}`;
+  const sel = el('select', { className:'select', id });
+  sel.dataset.ctl = key;
+  values.forEach(v => {
+    const opt = el('option', { value: String(v), textContent: String(v) });
+    if(String(v) === String(current)) opt.selected = true;
+    sel.append(opt);
+  });
+  sel.addEventListener('change', e => onChange(e.target.value, key));
+  return sel;
+}
+
+function controlRow(items){
+  const row = el('div', { className:'controls' });
+  items.forEach(([label, sel]) => row.append(el('label', { textContent: label, htmlFor: sel.id }), sel));
+  return row;
+}
+
+// Re-render one section after a control changes, keeping keyboard focus in place
+function update(i, key){
+  const old = document.getElementById(`sec-${i}`);
+  const fresh = buildSection(P.cfg.sections[i], i);
+  old.replaceWith(fresh);
+  fresh.querySelector(`[data-ctl="${key}"]`)?.focus();
+}
+
+function buildSection(sec, i){
+  const t = P.t;
+  const section = el('section', { className:'palette-section', id:`sec-${i}` });
+  section.append(el('h2', { textContent: sec.title }));
+  if(sec.intro) section.append(el('p', { className:'note', textContent: sec.intro }));
+
+  const type = sec.type || 'swatches';
+  const s = state[i];
+  const set = prop => (v, key) => { s[prop] = /steps/.test(prop) ? parseInt(v, 10) : v; update(i, key); };
+
+  if(type === 'swatches'){
+    (sec.groups || []).forEach(g => section.append(group(g.title, g.note, (g.colours || []).map(resolve))));
+  }
+
+  else if(type === 'ramps'){
+    (sec.colours || P.rampNames).filter(c => P.ramps[c]).forEach(c => section.append(group(c, null, P.ramps[c], 'row')));
+  }
+
+  else if(type === 'sequential' && s){
+    const size = poolSize(sec);
+    const stepOpts = [];
+    for(let n = Math.min(2, size); n <= size; n++) stepOpts.push(n);
+    section.append(controlRow([
+      [t.colour, select(`${i}-colour`, P.rampNames, s.colour, set('colour'))],
+      [t.steps, select(`${i}-steps`, stepOpts, s.steps, set('steps'))]
+    ]));
+    section.append(group(`${s.colour} · ${s.steps} ${t.stepsUnit}`, null, sequential(sec, s), 'row'));
+  }
+
+  else if(type === 'diverging' && s){
+    const size = poolSize(sec);
+    const stepOpts = [];
+    for(let n = 3; n <= 2 * size + 1; n += 2) stepOpts.push(n);
+    const cs = centres(sec);
+    const items = [[t.left, select(`${i}-left`, P.rampNames, s.left, set('left'))]];
+    if(cs.length > 1) items.push([t.centre, select(`${i}-centre`, cs.map(c => c.name), s.centre, set('centre'))]);
+    items.push([t.right, select(`${i}-right`, P.rampNames, s.right, set('right'))]);
+    items.push([t.steps, select(`${i}-steps`, stepOpts, s.steps, set('steps'))]);
+    section.append(controlRow(items));
+    const title = cs.length > 1 ? `${s.left} – ${s.centre} – ${s.right}` : `${s.left} – ${s.right}`;
+    section.append(group(`${title} · ${s.steps} ${t.stepsUnit}`, null, diverging(sec, s)));
+  }
+
+  else if(!['sequential', 'diverging'].includes(type)){
+    section.append(el('p', { className:'note', textContent:`Unknown section type "${type}".` }));
+  }
+
+  return section;
+}
+
+function alertBox(lines, intro){
+  const box = el('div', { className:'alert', role:'alert' });
+  if(intro) box.append(el('p', { innerHTML: intro }));
+  if(lines.length) box.append(el('ul', {}, lines.map(l => el('li', { textContent: l }))));
+  return box;
+}
+
+function render(){
+  const root = document.getElementById('palette-root');
+  root.replaceChildren();
+  if(P.errors.length) root.append(alertBox(P.errors, `<strong>${P.id}.json</strong> has problems:`));
+  (P.cfg.sections || []).forEach((sec, i) => root.append(buildSection(sec, i)));
+}
+
+function applyHeader(){
+  const cfg = P.cfg, t = P.t;
+  document.documentElement.lang = P.lang;
+  document.title = cfg.title || 'Colour Palettes';
+  document.getElementById('title').textContent = cfg.title || 'Colour Palettes';
+  document.getElementById('palette-label').textContent = t.palette;
+  document.getElementById('copy-css').textContent = t.copyCss;
+
+  const intro = document.getElementById('intro');
+  intro.textContent = cfg.intro || '';
+  intro.hidden = !cfg.intro;
+
+  const source = document.getElementById('source');
+  source.replaceChildren();
+  if(cfg.source){
+    const link = cfg.source.url ? el('a', { href: cfg.source.url, textContent: cfg.source.label || cfg.source.url })
+                                : document.createTextNode(cfg.source.label || '');
+    source.append(`${t.source}: `, link);
+  }
+  source.hidden = !cfg.source;
+
+  const theme = cfg.theme || {};
+  for(const [key, prop] of Object.entries(THEME_KEYS)){
+    if(theme[key] != null) document.documentElement.style.setProperty(prop, theme[key]);
+    else document.documentElement.style.removeProperty(prop);
+  }
+}
+
+// ------------------------------------------------------------
+// Export: every named colour and ramp step as CSS custom properties
+// ------------------------------------------------------------
+
+function cssVariables(){
+  const prefix = P.cfg.cssPrefix ?? P.id;
+  const slug = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+                     .replace(/%/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const varName = n => `--${prefix ? `${slug(prefix)}-` : ''}${slug(n)}`;
+  const seen = new Set();
+  const lines = [];
+  const add = (name, value) => {
+    const k = varName(name);
+    if(!value || seen.has(k)) return;
+    seen.add(k);
+    lines.push(`  ${k}: ${value};`);
+  };
+
+  Object.keys(P.cfg.colours || {}).forEach(n => add(n, P.lookup.get(n)));
+  for(const [colour, ramp] of Object.entries(P.ramps)){
+    lines.push('', `  /* ${colour} */`);
+    ramp.forEach(s => add(s.name, s.value));
+  }
+  return `/* ${P.cfg.title || P.id} — from palettes/${P.id}.json */\n:root {\n${lines.join('\n').replace(/^\n/, '')}\n}\n`;
+}
+
+document.getElementById('copy-css').addEventListener('click', async e => {
+  if(!P || !(await copyText(cssVariables()))) return;
+  const btn = e.currentTarget;
+  btn.textContent = P.t.cssCopied;
+  announce(P.t.cssCopied);
+  setTimeout(() => { btn.textContent = P.t.copyCss; }, 1400);
+});
+
+// ------------------------------------------------------------
+// Loading
+// ------------------------------------------------------------
+
+async function getJSON(url){
+  const res = await fetch(url, { cache:'no-cache' });
+  if(!res.ok) throw new Error(`Couldn't load ${url} (HTTP ${res.status}).`);
+  const text = await res.text();
+  try { return JSON.parse(text); }
+  catch(err){ throw new Error(`${url} is not valid JSON: ${err.message}`); }
+}
+
+function fail(err){
+  const hint = location.protocol === 'file:'
+    ? 'Browsers block opening the palette files straight from disk. In the repository folder run ' +
+      '<code>python3 -m http.server</code> and open <code>http://localhost:8000/palettes/</code>.'
+    : '';
+  const msg = location.protocol === 'file:' ? [] : [err.message];
+  document.getElementById('palette-root').replaceChildren(alertBox(msg, hint || '<strong>Palette could not be loaded.</strong>'));
+  console.error(err);
+}
+
+async function load(id, updateUrl){
+  try {
+    P = prepare(await getJSON(`${id}.json`), id);
+  } catch(err){
+    return fail(err);
+  }
+  applyHeader();
+  initState();
+  render();
+  document.getElementById('palette-select').value = id;
+  if(updateUrl){
+    const url = new URL(location.href);
+    url.searchParams.set('p', id);
+    history.replaceState(null, '', url);
+  }
+}
+
+async function init(){
+  try {
+    manifest = await getJSON('palettes.json');
+  } catch(err){
+    return fail(err);
+  }
+  const picker = document.getElementById('palette-select');
+  manifest.forEach(m => picker.append(el('option', { value: m.id, textContent: m.name || m.id })));
+  picker.closest('.toolbar').querySelectorAll('label, select').forEach(n => { n.hidden = manifest.length < 2; });
+  picker.addEventListener('change', () => load(picker.value, true));
+
+  const wanted = new URLSearchParams(location.search).get('p');
+  await load(manifest.some(m => m.id === wanted) ? wanted : manifest[0].id, false);
+}
+
+init();
+</script>
+
+</body>
+</html>

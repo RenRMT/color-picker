@@ -1,0 +1,102 @@
+{
+  "title": "Rijkshuisstijl Kleurenkiezer",
+  "lang": "nl",
+  "intro": "Op basis van Rijksoverheid Rijkshuisstijl kleurenspecificatie (Lintblauw, de 17 communicatiekleuren, en de online grijstinten). Kleurverlopen gebruiken de officiële 6-staps schaal (100% / 75% / 60% / 45% / 30% / 15%).",
+  "source": {
+    "label": "rijkshuisstijl.nl",
+    "url": "https://www.rijkshuisstijl.nl"
+  },
+  "theme": {
+    "font": "RijksoverheidSansWebText, \"RO Sans\", Verdana, Arial, sans-serif",
+    "background": "#FFFFFF",
+    "text": "#000000",
+    "muted": "#535353",
+    "heading": "#154273",
+    "accent": "#01689B",
+    "rule": "#154273",
+    "radius": "0px"
+  },
+  "colours": {
+    "Lintblauw": "#154273",
+    "Grijs 1": "#F3F3F3",
+    "Grijs 2": "#E6E6E6",
+    "Grijs 3": "#CCCCCC",
+    "Grijs 4": "#B4B4B4",
+    "Grijs 5": "#999999",
+    "Grijs 6": "#696969",
+    "Grijs 7": "#535353"
+  },
+  "ramps": {
+    "tints": {
+      "mixWith": "#FFFFFF",
+      "percent": [15, 30, 45, 60, 75, 100]
+    },
+    "baseStep": "100%",
+    "pick": ["100%", "15%", "60%", "30%", "75%", "45%"],
+    "colours": {
+      "Paars": "#42145F",
+      "Violet": "#A90061",
+      "Robijnrood": "#CA005D",
+      "Roze": "#F092CD",
+      "Rood": "#D52B1E",
+      "Oranje": "#E17000",
+      "Donkergeel": "#FFB612",
+      "Geel": "#F9E11E",
+      "Donkerbruin": "#673327",
+      "Bruin": "#94710A",
+      "Donkergroen": "#275937",
+      "Groen": "#39870C",
+      "Mosgroen": "#777B00",
+      "Mintgroen": "#76D2B6",
+      "Donkerblauw": "#01689B",
+      "Hemelblauw": "#007BC7",
+      "Lichtblauw": "#8FCAE7"
+    }
+  },
+  "sections": [
+    {
+      "title": "Brand Colours",
+      "groups": [
+        {
+          "title": "Lintblauw (logo colour)",
+          "colours": ["Lintblauw"]
+        },
+        {
+          "title": "Grijstinten online",
+          "colours": ["Grijs 1", "Grijs 2", "Grijs 3", "Grijs 4", "Grijs 5", "Grijs 6", "Grijs 7"]
+        }
+      ]
+    },
+    {
+      "title": "Communicatiekleuren",
+      "groups": [
+        {
+          "title": "Contrasting order",
+          "colours": ["Robijnrood", "Groen", "Hemelblauw", "Donkergeel", "Paars", "Mintgroen", "Rood", "Lichtblauw", "Bruin", "Violet", "Mosgroen", "Donkerblauw", "Geel", "Donkerbruin", "Roze", "Donkergroen", "Oranje"]
+        },
+        {
+          "title": "Rainbow order",
+          "colours": ["Rood", "Donkerbruin", "Oranje", "Donkergeel", "Bruin", "Geel", "Mosgroen", "Groen", "Donkergroen", "Mintgroen", "Donkerblauw", "Hemelblauw", "Lichtblauw", "Paars", "Violet", "Roze", "Robijnrood"]
+        }
+      ]
+    },
+    {
+      "title": "Kleurverloop",
+      "type": "sequential",
+      "default": {
+        "colour": "Hemelblauw",
+        "steps": 6
+      }
+    },
+    {
+      "title": "Kleurverloop (2 kleuren)",
+      "type": "diverging",
+      "centre": ["Grijs 1"],
+      "default": {
+        "left": "Robijnrood",
+        "right": "Groen",
+        "steps": 7
+      }
+    }
+  ]
+}
